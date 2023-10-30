@@ -2,7 +2,7 @@ name: common-trigger
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
     types: [opened, edited, synchronize, reopened]
 
 jobs:
