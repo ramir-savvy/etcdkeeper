@@ -35,6 +35,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          load: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           push: true
