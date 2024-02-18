@@ -58,6 +58,8 @@ func main() {
 		log.Println("Running in readonly mode")
 	}
 
+	log.Println("ETCD Host is:", *etcdHost)
+
 	middleware := func(fns ...func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 		return func(w http.ResponseWriter, r *http.Request) {
 			for _, fn := range fns {
