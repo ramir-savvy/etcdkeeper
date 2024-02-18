@@ -33,7 +33,7 @@ var (
 	useAuth        = flag.Bool("auth", false, "use auth")
 	connectTimeout = flag.Int("timeout", 5, "ETCD client connect timeout")
 	sendMsgSize    = flag.Int("sendMsgSize", 2*1024*1024, "ETCD client max send msg size")
-	readonly       = flag.Bool("readonly", false, "readonly mode")
+	readonly       = flag.Bool("readonly", false, "readonly mode") // mind that if READONLY env var is set to true, it will override this flag
 	etcdHost       = flag.String("etcdhost", "localhost:2379", "etcd host")
 	rootUsers      = make(map[string]*userInfo) // host:rootUser
 
@@ -54,11 +54,24 @@ func main() {
 	flag.CommandLine.Parse(os.Args[1:])
 	separator = *sep
 
-	if *readonly {
-		log.Println("Running in readonly mode")
+	readonlyEnv := os.Getenv("READONLY")
+	if readonlyEnv != "" {
+		val, err := strconv.ParseBool(readonlyEnv)
+		if err != nil {
+			log.Println("READONLY env var wrong value:", readonlyEnv, "Error:", err)
+			os.Exit(1)
+		}
+		*readonly = val
+		if *readonly {
+			log.Println("Running in readonly mode - environment variable set to true")
+		}
+	} else {
+		if *readonly {
+			log.Println("Running in readonly mode - argument provided")
+		}
 	}
 
-	log.Println("ETCD Host is:", *etcdHost)
+	log.Println("ETCD Host is", *etcdHost)
 
 	middleware := func(fns ...func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 		return func(w http.ResponseWriter, r *http.Request) {

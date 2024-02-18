@@ -11,10 +11,13 @@
             "mode": "auto",
             "program": "src/etcdkeeper/main.go",
             "args": [
-                "-readonly",
+                // "-readonly",
                 // "-etcdhost"
                 // "127.0.0.1:2379"
-            ]
+            ],
+            "env": {
+                "READONLY": "true"
+            }
         }
     ]
 }
